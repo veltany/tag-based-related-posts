@@ -124,15 +124,24 @@ function tb_related_posts_register_settings() {
     'tb_related_posts_style_template_field_cb',
     'tb-related-posts',
     'tb_related_posts_main_section'
-);
+   );
 
-add_settings_field(
+   add_settings_field(
     'nth_paragraph',
     __( 'Display After Nth Paragraph', 'tag-based-related-posts' ),
     'tb_related_posts_nth_paragraph_field_cb',
     'tb-related-posts',
     'tb_related_posts_main_section'
-);
+    );
+    
+     add_settings_field(
+        'hide_in_tags',
+        __( 'Hide In Tags (comma-separated)', 'tag-based-related-posts' ),
+        'tb_related_posts_hide_in_tags_field_cb',
+        'tb-related-posts',
+        'tb_related_posts_main_section'
+    );
+
 }
 add_action( 'admin_init', 'tb_related_posts_register_settings' );
 
@@ -207,6 +216,14 @@ function tb_related_posts_style_template_field_cb() {
     <?php
 }
 
+  function tb_related_posts_hide_in_tags_field_cb() {
+    $options = get_option( 'tb_related_posts_options', tb_related_posts_default_options() );
+    ?>
+    <input type="text" name="tb_related_posts_options[hide_in_tags]" value="<?php echo esc_attr( $options['hide_in_tags'] ); ?>" placeholder="e.g., tag1,tag2" />
+    <p class="description"><?php esc_html_e( 'Enter tags to exclude, separated by commas.', 'tag-based-related-posts' ); ?></p>
+    <?php
+   }
+
 // Validate and sanitize options.
 function tb_related_posts_validate_options( $input ) {
     $validated = array();
@@ -216,6 +233,7 @@ function tb_related_posts_validate_options( $input ) {
     $validated['display_location'] = sanitize_text_field( $input['display_location'] ?? 'after_content' );
     $validated['style_template'] = sanitize_text_field( $input['style_template'] ?? 'list' );
     $validated['nth_paragraph'] = (int) ( $input['nth_paragraph'] ?? 1 );
+     $validated['hide_in_tags']   = sanitize_text_field( $input['hide_in_tags'] ?? '' );
 
     return $validated;
 }
@@ -230,6 +248,17 @@ function tb_related_posts_get_option( $key ) {
 function tb_related_posts_append_to_content( $content ) {
     if ( ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() ) {
         return $content;
+    }
+    
+    // Check if post contains tags to hide
+    // Check if this post should be excluded.
+    $hidden_tags = tb_related_posts_get_option( 'hide_in_tags' );
+    $excluded_tags = array_map( 'trim', explode( ',', $hidden_tags ?? '' ) );
+    $post_tags = wp_get_post_tags( get_the_ID(), array( 'fields' => 'slugs' ) );
+    
+    // If current post has any excluded tag or category, exit early.
+    if ( array_intersect( $excluded_tags, $post_tags ) ) {
+    return $content; // Don't append related posts.
     }
 
     $display_location = tb_related_posts_get_option( 'display_location' );
