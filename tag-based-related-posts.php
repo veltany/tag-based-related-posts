@@ -2,15 +2,42 @@
 /**
  * Plugin Name: Tag-Based Related Posts
  * Description: Automatically inserts a list of related posts within your content based on shared tags.
- * Version: 1.2
+ * Version: 1.1
  * Author: Samuel Chukwu 
  * License: GPL2
+ * Text Domain: tb_related_posts
+ * Author URI: https://github.com/veltany 
+ * GitHub Plugin URI: https://github.com/veltany/tag-based-related-posts
+ * GitHub Branch: main
+ * Requires at least: 6.6
+ * Requires PHP: 8.2
  */
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+// PLUGIN UPDATES
+
+define('TB_RELATED_POSTS_VERSION', '2.1');
+define('TB_RELATED_POSTS_DIR', plugin_dir_path(__FILE__));
+define('TB_RELATED_POSTS_URL', plugin_dir_url(__FILE__));
+
+
+require TB_RELATED_POSTS_DIR.'update/plugin-update-checker.php';
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+	'https://github.com/veltany/tag-based-related-posts',
+	TB_RELATED_POSTS_DIR.'tag-based-related-posts.php', //Full path to the main plugin file or functions.php.,
+	'tb_related_posts'
+);
+
+//Set the branch that contains the stable release.
+$myUpdateChecker->setBranch('main');
+
+
 
 // Define default options.
 function tb_related_posts_default_options() {
@@ -392,3 +419,4 @@ function tb_related_posts_shortcode() {
     return tb_related_posts_generate_related_posts_html();
 }
 add_shortcode( 'tb_related_posts', 'tb_related_posts_shortcode' );
+
