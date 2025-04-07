@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // PLUGIN UPDATES
 
-define('TB_RELATED_POSTS_VERSION', '2.1');
+define('TB_RELATED_POSTS_VERSION', '2.5');
 define('TB_RELATED_POSTS_DIR', plugin_dir_path(__FILE__));
 define('TB_RELATED_POSTS_URL', plugin_dir_url(__FILE__));
 
