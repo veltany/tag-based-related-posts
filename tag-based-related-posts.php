@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Tag-Based Related Posts
- * Description: Automatically inserts a list of related posts within your content based on shared tags.
- * Version: 1.5
+ * Description: Automatically insert a list of related posts within your content based on shared tags.
+ * Version: 2.5
  * Author: Samuel Chukwu 
  * License: GPL2
  * Text Domain: tb_related_posts
