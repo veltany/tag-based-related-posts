@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tag-Based Related Posts
  * Description: Automatically insert a list of related posts within your content based on shared tags.
- * Version: 2.6
+ * Version: 2.0
  * Author: Samuel Chukwu 
  * License: GPL2
  * Text Domain: tb_related_posts
@@ -143,7 +143,7 @@ function tb_related_posts_register_settings() {
     );
     
     add_settings_field(
-        'hide_in_tags',
+        'hide_in_categories',
         __( 'Hide In Category (comma-separated)', 'tag-based-related-posts' ),
         'tb_related_posts_hide_in_categories_field_cb',
         'tb-related-posts',
@@ -271,13 +271,13 @@ function tb_related_posts_append_to_content( $content ) {
         return $content;
     }
     
-    // Check if post contains tags to hide
+    // Check if post contains tags or categories to hide
     // Check if this post should be excluded.
     $hidden_tags = tb_related_posts_get_option( 'hide_in_tags' );
     $hidden_categories = tb_related_posts_get_option( 'hide_in_categories' );
    
     $excluded_tags = array_map( 'trim', explode( ',', $hidden_tags ?? '' ) );
-    $excluded_categories = array_map( 'trim', explode( ',', $options['hide_in_categories'] ?? '' ) );
+    $excluded_categories = array_map( 'trim', explode( ',', $hidden_categories ?? '' ) );
 
     $post_tags = wp_get_post_tags( get_the_ID(), array( 'fields' => 'slugs' ) );
     $post_categories = wp_get_post_categories( get_the_ID(), array( 'fields' => 'slugs' ) );
