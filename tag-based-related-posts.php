@@ -25,7 +25,7 @@ define('TB_RELATED_POSTS_DIR', plugin_dir_path(__FILE__));
 define('TB_RELATED_POSTS_URL', plugin_dir_url(__FILE__));
 
 
-require TB_RELATED_POSTS_DIR.'update/plugin-update-checker.php';
+require TB_RELATED_POSTS_DIR.'plugin-update/plugin-update-checker.php';
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 $myUpdateChecker = PucFactory::buildUpdateChecker(
