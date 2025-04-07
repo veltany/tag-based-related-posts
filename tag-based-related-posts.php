@@ -141,6 +141,15 @@ function tb_related_posts_register_settings() {
         'tb-related-posts',
         'tb_related_posts_main_section'
     );
+    
+    add_settings_field(
+        'hide_in_tags',
+        __( 'Hide In Category (comma-separated)', 'tag-based-related-posts' ),
+        'tb_related_posts_hide_in_categories_field_cb',
+        'tb-related-posts',
+        'tb_related_posts_main_section'
+    );
+
 
 }
 add_action( 'admin_init', 'tb_related_posts_register_settings' );
@@ -223,6 +232,17 @@ function tb_related_posts_style_template_field_cb() {
     <p class="description"><?php esc_html_e( 'Enter tags to exclude, separated by commas.', 'tag-based-related-posts' ); ?></p>
     <?php
    }
+   
+   
+   
+  function tb_related_posts_hide_in_categories_field_cb() {
+    $options = get_option( 'tb_related_posts_options', tb_related_posts_default_options() );
+    ?>
+    <input type="text" name="tb_related_posts_options[hide_in_categories]" value="<?php echo esc_attr( $options['hide_in_categories'] ); ?>" placeholder="e.g., category1,category2" />
+    <p class="description"><?php esc_html_e( 'Enter categories to exclude, separated by commas.', 'tag-based-related-posts' ); ?></p>
+    <?php
+   }
+
 
 // Validate and sanitize options.
 function tb_related_posts_validate_options( $input ) {
@@ -233,7 +253,8 @@ function tb_related_posts_validate_options( $input ) {
     $validated['display_location'] = sanitize_text_field( $input['display_location'] ?? 'after_content' );
     $validated['style_template'] = sanitize_text_field( $input['style_template'] ?? 'list' );
     $validated['nth_paragraph'] = (int) ( $input['nth_paragraph'] ?? 1 );
-     $validated['hide_in_tags']   = sanitize_text_field( $input['hide_in_tags'] ?? '' );
+    $validated['hide_in_tags']   = sanitize_text_field( $input['hide_in_tags'] ?? '' );
+    $validated['hide_in_categories']   = sanitize_text_field( $input['hide_in_categories'] ?? '' );
 
     return $validated;
 }
@@ -253,11 +274,16 @@ function tb_related_posts_append_to_content( $content ) {
     // Check if post contains tags to hide
     // Check if this post should be excluded.
     $hidden_tags = tb_related_posts_get_option( 'hide_in_tags' );
+    $hidden_categories = tb_related_posts_get_option( 'hide_in_categories' );
+   
     $excluded_tags = array_map( 'trim', explode( ',', $hidden_tags ?? '' ) );
+    $excluded_categories = array_map( 'trim', explode( ',', $options['hide_in_categories'] ?? '' ) );
+
     $post_tags = wp_get_post_tags( get_the_ID(), array( 'fields' => 'slugs' ) );
+    $post_categories = wp_get_post_categories( get_the_ID(), array( 'fields' => 'slugs' ) );
     
     // If current post has any excluded tag or category, exit early.
-    if ( array_intersect( $excluded_tags, $post_tags ) ) {
+    if ( array_intersect( $excluded_tags, $post_tags )  || array_intersect( $excluded_categories, $post_categories ) ) {
     return $content; // Don't append related posts.
     }
 
