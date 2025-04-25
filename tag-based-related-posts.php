@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tag-Based Related Posts
  * Description: Automatically insert a list of related posts within your content based on shared tags.
- * Version: 2.0
+ * Version: 2.0.1
  * Author: Samuel Chukwu 
  * License: GPL2
  * Text Domain: tb_related_posts
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // PLUGIN UPDATES
 
-define('TB_RELATED_POSTS_VERSION', '2.5');
+define('TB_RELATED_POSTS_VERSION', '2.0.1');
 define('TB_RELATED_POSTS_DIR', plugin_dir_path(__FILE__));
 define('TB_RELATED_POSTS_URL', plugin_dir_url(__FILE__));
 
@@ -395,7 +395,7 @@ function tb_related_posts_generate_related_posts_html() {
 
     // Generate HTML based on the selected style.
     $html = '<div class="tb-related-posts tb-related-posts-' . esc_attr( $style_template ) . '">';
-    $html .= '<h3>' . esc_html__( 'Related Songs', 'tag-based-related-posts' ) . '</h3>';
+    $html .= '<h2>' . esc_html__( 'Related Songs', 'tag-based-related-posts' ) . '</h2>';
 
     switch ( $style_template ) {
         case 'grid':
