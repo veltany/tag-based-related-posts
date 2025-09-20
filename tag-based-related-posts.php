@@ -422,27 +422,35 @@ function tb_related_posts_generate_related_posts_html() {
             $html .= '</ul>';
             break;
             
-         case 'card':
-            $html .= '<div class="tb-related-posts tb-related-posts-cards" >';
-            foreach ( $related_posts as $related ) {
-                $html .= '<div class="tb-related-post-card" >';
-                $html .= '<a href="' . esc_url( get_permalink( $related->ID ) ) . '"  class="tb-related-post-link" > ';
-                
-                $html .= 
-                        '<div class="tb-related-post-thumbnail">'. 
-                  get_the_post_thumbnail($related->ID, 'thumb', array('height' => 75, 'width' => 75) ). 
-                       ' </div>
-                    <div class="tb-related-post-title">
-                        '. get_the_title($related->ID ).' 
-                    </div>'
-                    
-                     ;
-                
-                $html .= '</a>';
-                $html .= '</div>';
-            }
-            $html .= '</div>';
-            break;
+        case 'card':
+    $html .= '<div class="tb-related-posts tb-related-posts-cards">';
+    foreach ( $related_posts as $related ) {
+        $html .= '<div class="tb-related-post-card">';
+        $html .= '<a href="' . esc_url( get_permalink( $related->ID ) ) . '" class="tb-related-post-link">';
+
+        $html .= '<div class="tb-related-post-thumbnail">';
+        $html .= get_the_post_thumbnail(
+            $related->ID,
+            'thumbnail', // ✅ fixed from 'thumb'
+            array(
+                'class'   => 'tb-related-post-img',
+                'alt'     => esc_attr( get_the_title( $related->ID ) ),
+                'loading' => 'lazy',
+                'decoding'=> 'async'
+            )
+        );
+        $html .= '</div>';
+
+        $html .= '<div class="tb-related-post-title">';
+        $html .= esc_html( get_the_title( $related->ID ) );
+        $html .= '</div>';
+
+        $html .= '</a>';
+        $html .= '</div>';
+    }
+    $html .= '</div>';
+    break;
+
 
         case 'list':
         default:
